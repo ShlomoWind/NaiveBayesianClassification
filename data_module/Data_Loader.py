@@ -8,10 +8,19 @@ class DataLoader:
     def load(self):
         if self.type == 'csv':
             return self.csv_loader()
+        if self.type == 'json':
+            return self.json_loader()
+        if self.type == 'sql':
+            return self.sql_loader()
+        else:
+            raise ValueError("type error")
 
     def csv_loader(self):
         df = pd.read_csv(self.path)
-        print("Available columns:", list(df.columns))
-        target_column = input("Which column do you want to use as the target? ").strip()
-        df.set_index(target_column,inplace=True)
         return df
+
+    def json_loader(self):
+        pass
+
+    def sql_loader(self):
+        pass
