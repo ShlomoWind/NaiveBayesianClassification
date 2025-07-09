@@ -1,18 +1,15 @@
-import pandas as pd
+from functools import total_ordering
 
-df = pd.read_csv('../buy_computer_data.csv')
+from data_module.Data_Loader import DataLoader
 
-classes = df['buys_computer'].unique()
+loader = DataLoader('csv','buy_computer_data.csv')
+df = loader.load()
 
-class_probs = {} #General probabilities of the categories (yes, no)
+classes = df.index.unique()
 total_count = len(df)
+class_probs = {cls: (df.index == cls).sum() / total_count for cls in classes }
 
-for cls in classes:
-    class_count = len(df[df['buys_computer'] == cls])
-    class_probs[cls] = class_count / total_count
-
-probabilities = {} #Conditional probabilities of each value for each column in each category
-
+probabilities = {}
 for column in df.columns:
     if column == 'buys_computer':
         continue
