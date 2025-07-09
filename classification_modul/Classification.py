@@ -1,6 +1,6 @@
 import pandas as pd
 
-df = pd.read_csv('buy_computer_data.csv')
+df = pd.read_csv('../buy_computer_data.csv')
 
 classes = df['buys_computer'].unique()
 
@@ -23,7 +23,7 @@ for column in df.columns:
     for value in column_values:
         probabilities[column][value] = {}
         for cls in classes:
-            count = grouped.get((cls, value),0)
+            count = grouped[(cls, value)] if (cls, value) in grouped else 0
             total = cls_count[cls]
             prob = count / total
             probabilities[column][value][cls] = prob
