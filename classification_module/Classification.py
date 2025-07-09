@@ -1,29 +1,26 @@
-from functools import total_ordering
+def train(df):
+    classes = df.index.unique()
+    total_count = len(df)
+    class_probs = {cls: (df.index == cls).sum() / total_count for cls in classes}
 
-from data_module.Data_Loader import DataLoader
+    probabilities = {}
+    for column in df.columns:
+        column_values = df[column].unique()
+        probabilities[column] = {}
+        grouped = df.groupby([df.index,column]).size()
+        cls_count = df.index.value_counts()
 
-loader = DataLoader('csv','buy_computer_data.csv')
-df = loader.load()
+        for value in column_values:
+            probabilities[column][value] = {}
 
-classes = df.index.unique()
-total_count = len(df)
-class_probs = {cls: (df.index == cls).sum() / total_count for cls in classes }
+            for cls in classes:
+                count = grouped.get((cls, value), 0)
+                total = cls_count[cls]
+                prob = count / total
+                probabilities[column][value][cls] = prob
 
-probabilities = {}
-for column in df.columns:
-    if column == 'buys_computer':
-        continue
-    grouped = df.groupby(['buys_computer', column]).size()
-    cls_count = df['buys_computer'].value_counts()
-    column_values = df[column].unique()
-    probabilities[column] = {}
-    for value in column_values:
-        probabilities[column][value] = {}
-        for cls in classes:
-            count = grouped[(cls, value)] if (cls, value) in grouped else 0
-            total = cls_count[cls]
-            prob = count / total
-            probabilities[column][value][cls] = prob
+    return class_probs,probabilities
+
 
 def predict(sample,class_probs,probabilities):
     scores = {}
