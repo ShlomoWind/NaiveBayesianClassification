@@ -15,4 +15,4 @@ def ran():
     train_df, test_df = train_test_split(df, test_size=0.3, random_state=42, stratify=df.index)
     class_probs, probabilities = train(train_df)
     accuracy = accuracy_check(test_df, predict, class_probs, probabilities)
-    print(f"\n✅ Accuracy on test set: {accuracy:.2%}")
+    print(f"\n*****\nAccuracy on test set: {accuracy:.2%}\n*****")

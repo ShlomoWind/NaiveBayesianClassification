@@ -12,6 +12,8 @@ class DataLoader:
             return self.json_loader()
         if self.type == 'sql':
             return self.sql_loader()
+        if self.type == 'excel':
+            return self.excel_loader()
         else:
             raise ValueError("type error")
 
@@ -20,7 +22,12 @@ class DataLoader:
         return df
 
     def json_loader(self):
-        pass
+        df = pd.read_json(self.path)
+        return  df
+
+    def excel_loader(self):
+        df = pd.read_excel(self.path)
+        return df
 
     def sql_loader(self):
         pass
