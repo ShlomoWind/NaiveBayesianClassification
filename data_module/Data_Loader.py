@@ -6,16 +6,23 @@ class DataLoader:
         self.path = path
 
     def load(self):
-        if self.type == 'csv':
-            return self.csv_loader()
-        if self.type == 'json':
-            return self.json_loader()
-        if self.type == 'sql':
-            return self.sql_loader()
-        if self.type == 'excel':
-            return self.excel_loader()
-        else:
-            raise ValueError("type error")
+        try:
+            if self.type == 'csv':
+                return self.csv_loader()
+            if self.type == 'json':
+                return self.json_loader()
+            if self.type == 'sql':
+                return self.sql_loader()
+            if self.type == 'excel':
+                return self.excel_loader()
+            else:
+                raise ValueError("type error")
+
+        except FileNotFoundError:
+            raise FileNotFoundError(f"File not found at path: {self.path}")
+        except Exception as e:
+            raise RuntimeError(f"Failed to load data: {str(e)}")
+
 
     def csv_loader(self):
         df = pd.read_csv(self.path)
