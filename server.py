@@ -18,7 +18,7 @@ class DataRequest(BaseModel):
     target: str
 
 class PredictRequest(BaseModel):
-    prediction = dict
+    prediction = Dict[str,str]
 
 @app.post("/train")
 def train_data(req:DataRequest):
@@ -30,3 +30,12 @@ def train_data(req:DataRequest):
     model_class_probs,model_probabilities = train(df)
     model_features = list(df.columns)
     return {"message": "Model trained successfully."}
+
+@app.post("/predict")
+def user_predict(req:PredictRequest):
+    req_dict = req.prediction
+    for feature in model_features:
+        if feature not in req_dict:
+            raise HTTPException(status_code=400, detail=f"Missing feature: {feature}")
+    prediction = predict(req_dict,model_class_probs,model_probabilities)
+    return {"prediction":prediction}
