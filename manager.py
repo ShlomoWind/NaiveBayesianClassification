@@ -16,3 +16,19 @@ def ran():
     class_probs, probabilities = train(train_df)
     accuracy = accuracy_check(test_df, predict, class_probs, probabilities)
     print(f"\n*****\nAccuracy on test set: {accuracy:.2%}\n*****")
+
+    features = list(df.columns)
+    print("\nYou can now test predictions manually.")
+    print("Type 'exit' at any time to stop.\n")
+
+    while True:
+        user_sample = {}
+        for feature in features:
+            value = input(f"Enter value for '{feature}': ").strip()
+            if value.lower() == 'exit':
+                print("Exiting prediction loop.")
+                return
+            user_sample[feature] = value
+
+        prediction = predict(user_sample, class_probs, probabilities)
+        print(f"Prediction for the given input: {prediction}\n")
