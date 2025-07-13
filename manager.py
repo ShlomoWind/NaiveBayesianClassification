@@ -2,7 +2,7 @@ from user_module.user_input import data_info,column_for_prediction
 from data_module.Data_Loader import DataLoader
 from classification_module.Classification import train,predict
 from testing_module.Tester import accuracy_check
-from clining_module.Cliner import clean_data
+from cleaning_module.Cliner import clean_data
 from sklearn.model_selection import train_test_split
 
 def ran():

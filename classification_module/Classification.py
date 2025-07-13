@@ -1,6 +1,8 @@
 def train(df):
     classes = df.index.unique()
     total_count = len(df)
+    if total_count == 0:
+        raise ValueError("Training dataframe is empty")
     class_probs = {cls: (df.index == cls).sum() / total_count for cls in classes}
 
     probabilities = {}
@@ -23,6 +25,9 @@ def train(df):
 
 
 def predict(sample,class_probs,probabilities):
+    if not class_probs or not probabilities:
+        raise ValueError("Model is not trained yet")
+
     scores = {}
     for cls in class_probs:
         prob = class_probs[cls]

@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from typing import Dict,Any
 import pandas as pd
 from data_module.Data_Loader import DataLoader
-from clining_module.Cliner import clean_data
+from cleaning_module.Cliner import clean_data
 from classification_module.Classification import train,predict
 
 app = FastAPI()
