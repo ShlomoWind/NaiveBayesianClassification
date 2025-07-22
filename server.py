@@ -1,48 +1,50 @@
-from fastapi import FastAPI,HTTPException
+from fastapi import FastAPI, HTTPException, status
 from pydantic import BaseModel
-from typing import Dict,Any
-from starlette import status
+from typing import Dict, Any
 
 from data_module.Data_Loader import DataLoader
-from cleaning_module.Cliner import clean_data
-from classification_module.Classification import train,predict
+from cleaning_module.Cleaner import clean_data
+from classification_module.train_model import TrainModel
+from classification_module.predictor import Predictor
 
 app = FastAPI()
 
-model_class_probs = None
-model_probabilities = None
-model_features = None
+data_path = "buy_computer_data.csv"
+data_type = "csv"
+target_column = "buys_computer"
 
-class DataRequest(BaseModel):
-    path: str
-    type: str
-    target: str
+model_probabilities = None
+model_class_probs = None
+model_features = None
+predictor = None
 
 class PredictRequest(BaseModel):
-    prediction :Dict[str,Any]
+    prediction: Dict[str, Any]
 
-@app.post("/train")
-def train_data(req:DataRequest):
-    global model_class_probs,model_probabilities,model_features
-    try:
-        loader = DataLoader(req.type,req.path)
-        df = loader.load()
-        df = clean_data(df)
-        df.set_index(req.target, inplace=True)
-        model_class_probs,model_probabilities = train(df)
-        model_features = list(df.columns)
-        return {"message": "Model trained successfully."}
-    except Exception as e:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
+try:
+    loader = DataLoader(data_type, data_path)
+    df = loader.load()
+    df = clean_data(df)
+    df.set_index(target_column, inplace=True)
+
+    trainer = TrainModel()
+    model_class_probs, model_probabilities = trainer.train(df)
+    model_features = list(df.columns)
+
+    predictor = Predictor(model_class_probs, model_probabilities)
+
+    print("message: Model trained successfully.")
+except Exception as e:
+    raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(e))
 
 @app.post("/predict")
-def user_predict(req:PredictRequest):
+def user_predict(req: PredictRequest):
+    global predictor, model_features
+    if predictor is None:
+        raise HTTPException(status_code=400, detail="Model is not trained yet. Please train before predicting.")
+    req_dict = req.prediction
     try:
-        req_dict = req.prediction
-        for feature in model_features:
-            if feature not in req_dict:
-                raise HTTPException(status_code=400, detail=f"Missing feature: {feature}")
-        prediction = predict(req_dict,model_class_probs,model_probabilities)
-        return {"prediction":prediction}
-    except Exception as e:
-        raise HTTPException(status_code=400, detail=str(e))
+        prediction = predictor.predict(req_dict)
+        return {"prediction": prediction}
+    except Exception as ex:
+        raise HTTPException(status_code=400, detail=str(ex))
