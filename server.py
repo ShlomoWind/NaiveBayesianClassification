@@ -1,7 +1,6 @@
 from fastapi import FastAPI,HTTPException
 from pydantic import BaseModel
 from typing import Dict,Any
-import pandas as pd
 from starlette import status
 
 from data_module.Data_Loader import DataLoader
