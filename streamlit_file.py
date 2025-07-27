@@ -1,7 +1,7 @@
 import streamlit as st
 import requests
 
-base_url = "http://127.0.0.1:8001/predict"  # תשנה ל-8001
+base_url = "http://127.0.0.1:8001/predict"
 
 st.set_page_config(page_title="Naive Bayes Predictor", page_icon="🤖")
 st.title("🔍 Naive Bayes Classifier")
@@ -22,7 +22,7 @@ for feature, options in feature_options.items():
 
 if st.button("🔮 Predict💡"):
     try:
-        response = requests.post(base_url, json=input_data)  # שולח את המילון ישירות
+        response = requests.post(base_url, json=input_data)
         if response.status_code == 200:
             result = response.json()["prediction"]
             st.success(f"Prediction: {result}")
