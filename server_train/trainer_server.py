@@ -1,23 +1,23 @@
 from fastapi import FastAPI, HTTPException
-from data_module.Data_Loader import DataLoader
-from cleaning_module.Cleaner import clean_data
+from data_module.data_loader import DataLoader
+from cleaning_module.cleaner import clean_data
 from classification_module.train_model import TrainModel
 from sklearn.model_selection import train_test_split
 from classification_module.predictor import Predictor
-from testing_module.Tester import accuracy_check
+from testing_module.tester import accuracy_check
 
 import os
 import json
 import pandas as pd
 
 app =FastAPI()
-model_path = "model_output/model.json"
+model_path = "../model_output/model.json"
 
 @app.on_event("startup")
 def train_on_startup():
     try:
         target_column = "buys_computer"
-        data_loader = DataLoader("csv","buy_computer_data.csv")
+        data_loader = DataLoader("csv", "../buy_computer_data.csv")
         df = data_loader.load()
         df = clean_data(df)
         df.set_index(target_column, inplace=True)
@@ -28,7 +28,7 @@ def train_on_startup():
             "class_probs": class_probs,
             "probabilities": probabilities
         }
-        os.makedirs("model_output", exist_ok=True)
+        os.makedirs("../model_output", exist_ok=True)
         with open(model_path, "w") as f:
             json.dump(model_to_save, f)
         predictor = Predictor(class_probs, probabilities)

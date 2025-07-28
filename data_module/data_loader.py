@@ -2,7 +2,7 @@ import pandas as pd
 
 class DataLoader:
     def __init__(self,file_type,file_path):
-        self.file_type = file_type
+        self.file_type = file_type.lower()
         self.file_path = file_path
 
     def load(self):
