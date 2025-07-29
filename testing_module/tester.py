@@ -1,5 +1,3 @@
-from random import sample
-
 def accuracy_check(test_df, predictor):
     if len(test_df) == 0:
         raise ValueError("Test dataframe is empty")
