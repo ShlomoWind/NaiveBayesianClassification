@@ -17,7 +17,7 @@ model_path = "../model_output/model.json"
 def train_on_startup():
     try:
         target_column = "buys_computer"
-        data_loader = DataLoader("csv", "../buy_computer_data.csv")
+        data_loader = DataLoader("csv", "buy_computer_data.csv")
         df = data_loader.load()
         df = clean_data(df)
         df.set_index(target_column, inplace=True)
