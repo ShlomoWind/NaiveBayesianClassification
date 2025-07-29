@@ -11,7 +11,7 @@ import json
 import pandas as pd
 
 app =FastAPI()
-model_path = "../model_output/model.json"
+model_path = "model_output/model.json"
 
 @app.on_event("startup")
 def train_on_startup():
@@ -28,7 +28,7 @@ def train_on_startup():
             "class_probs": class_probs,
             "probabilities": probabilities
         }
-        os.makedirs("../model_output", exist_ok=True)
+        os.makedirs("model_output", exist_ok=True)
         with open(model_path, "w") as f:
             json.dump(model_to_save, f)
         predictor = Predictor(class_probs, probabilities)

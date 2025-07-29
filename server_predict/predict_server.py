@@ -12,7 +12,7 @@ class PredictionInput(BaseModel):
     credit_rating: str
 
 app = FastAPI()
-model_url = "http://trainer:8000"
+model_url = "http://trainer-container:8000"
 
 @app.post("/predict")
 def predict(input_data: PredictionInput):
